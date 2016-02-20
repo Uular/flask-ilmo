@@ -1,0 +1,3 @@
+*.py[col]
+.idea/
+env/
