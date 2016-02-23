@@ -1,3 +1,4 @@
 *.py[col]
 .idea/
 env/
+*.log

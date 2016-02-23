@@ -1,0 +1,87 @@
+{% extends 'pollbase.html' %}
+{% import 'macros.html' as macros %}
+{% block content %}
+  <div class="main">
+    <h1>KotiMaanPitkä 2016 tulee!</h1>
+    {% if starttime < nowtime < endtime %}
+      <form class="form-horizontal" action="" method="post" name="kmp">
+        {{ form.hidden_tag() }}
+        {{ macros.render_field(form.name) }}
+        {{ macros.render_field(form.email) }}
+        {{ macros.render_field(form.phone) }}
+        <div class="form-group {% if form.guild.errors %}has-error{% endif %} row">
+          <div class="col-sm-2">
+            <label class="control-label">Pysäkki, jolla nousen kyytiin:</label>
+
+          </div>
+          {{ macros.render_radio_field(form.station) }}
+          {% for e in form.station.errors %}
+            <p class="help-block">{{ e }}</p>
+          {% endfor %}
+        </div>
+        <div class="form-group {% if form.guild.errors %}has-error{% endif %} row">
+          <div class="col-sm-2">
+            <label class="control-label">Kilta:</label>
+          </div>
+          {{ macros.render_radio_field(form.guild) }}
+          {% for e in form.guild.errors %}
+            <p class="help-block">{{ e }}</p>
+          {% endfor %}
+        </div>
+          <div class="col-sm-offset-2 checkbox col-sm-10">
+            <label>
+              {{ form.sitsit(type='checkbox') }} Osallistun Titeenigaalan sitseille (lisämaksu)
+            </label>
+
+          {% for e in form.sitsit.errors %}
+            <p class="help-block">{{ e }}</p>
+          {% endfor %}
+          </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <input type="submit" value="Lähetä" class="btn btn-default">
+          </div>
+        </div>
+      </form>
+    {% elif nowtime < starttime %}
+      <p>Kello on {{ nowtime }} virallista otitsun-aikaa.</p>
+      <p>Ilmoittautuminen aukeaa {{ starttime }}.</p>
+    {% else %}
+      <p>Ilmoittautuminen on päättynyt.</p>
+    {% endif %}
+
+    <hr/>
+
+    {% if otit or sik or muu %}
+      <h2>Ilmoittautuneet: </h2>
+      <div class="guildlist row">
+        {% for guild in guilds %}
+          <div class="guild col-md-4">
+            <h2>{{ guild.name }}</h2>
+            {% if guild.submissions %}
+              <ol>
+                {% for sub in guild.submissions %}
+                  <li>
+                    {{ sub.name }}
+                    {% if loop.index > guild.quota %}
+                      (varalla)
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ol>
+            {% else %}
+              <em>Ei ketään :(</em>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <h2>Ei ilmoittautuneita!</h2>
+    {% endif %}
+  </div>
+{% endblock %}
+
+
+
+
+
