@@ -10,33 +10,28 @@
         {{ macros.render_field(form.email) }}
         {{ macros.render_field(form.phone) }}
         <div class="form-group {% if form.guild.errors %}has-error{% endif %} row">
-          <div class="col-sm-2">
-            <label class="control-label">Pysäkki, jolla nousen kyytiin:</label>
-
-          </div>
+          <label class="control-label col-lg-2">Pysäkki:</label>
           {{ macros.render_radio_field(form.station) }}
           {% for e in form.station.errors %}
             <p class="help-block">{{ e }}</p>
           {% endfor %}
         </div>
         <div class="form-group {% if form.guild.errors %}has-error{% endif %} row">
-          <div class="col-sm-2">
-            <label class="control-label">Kilta:</label>
-          </div>
+          <label class="control-label col-lg-2">Kilta:</label>
           {{ macros.render_radio_field(form.guild) }}
           {% for e in form.guild.errors %}
             <p class="help-block">{{ e }}</p>
           {% endfor %}
         </div>
-          <div class="col-sm-offset-2 checkbox col-sm-10">
-            <label>
-              {{ form.sitsit(type='checkbox') }} Osallistun Titeenigaalan sitseille (lisämaksu)
-            </label>
+        <div class="col-sm-offset-2 checkbox col-sm-10">
+          <label>
+            {{ form.sitsit(type='checkbox') }} Osallistun Titeenigaalan sitseille (lisämaksu)
+          </label>
 
           {% for e in form.sitsit.errors %}
             <p class="help-block">{{ e }}</p>
           {% endfor %}
-          </div>
+        </div>
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
             <input type="submit" value="Lähetä" class="btn btn-default">
@@ -54,7 +49,7 @@
 
     {% if otit or sik or muu %}
       <h2>Ilmoittautuneet: </h2>
-      <div class="guildlist row">
+      <div class="guildlist row center">
         {% for guild in guilds %}
           <div class="guild col-md-4">
             <h2>{{ guild.name }}</h2>

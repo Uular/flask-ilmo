@@ -12,9 +12,9 @@
 
     <div class="form-group {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }}">
         {% if (field.type != 'HiddenField' and field.type !='CSRFTokenField') and label_visible %}
-            <label for="{{ field.id }}" class="col-sm-2 control-label">{{ field.label }}</label>
+            <label for="{{ field.id }}" class="col-lg-2 control-label">{{ field.label }}</label>
         {% endif %}
-        <div class="col-sm-10">{{ field(class_='form-control', **kwargs) }}</div>
+        <div class="col-lg-10">{{ field(class_='form-control', **kwargs) }}</div>
         {% if field.errors %}
             {% for e in field.errors %}
                 <p class="help-block">{{ e }}</p>
@@ -50,7 +50,7 @@
         {{ macros.render_radio_field(form.answers) }}
  #}
 {% macro render_radio_field(field) -%}
-        <div class="radio col-sm-10">
+        <div class="radio col-lg-10">
     {% for value, label, selected in field.iter_choices() %}
         <div>
             <label>
