@@ -3,7 +3,7 @@
 {% block content %}
   <div class="main">
     <h1>KotiMaanPitkä 2016 tulee!</h1>
-    {% if starttime < nowtime < endtime %}
+    {% if starttime > nowtime < endtime %}
       <form class="form-horizontal" action="" method="post" name="kmp">
         {{ form.hidden_tag() }}
         {{ macros.render_field(form.name) }}
@@ -38,7 +38,7 @@
           </div>
         </div>
       </form>
-    {% elif nowtime < starttime %}
+    {% elif nowtime > starttime %}
       <p>Kello on {{ nowtime }} virallista otitsun-aikaa.</p>
       <p>Ilmoittautuminen aukeaa {{ starttime }}.</p>
     {% else %}

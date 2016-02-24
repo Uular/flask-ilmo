@@ -10,4 +10,3 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 DEBUG = False
 
 WTF_CSRF_ENABLED = True
-SECRET_KEY = 'AivanVitunSalainenHomo'
