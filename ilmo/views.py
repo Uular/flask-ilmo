@@ -10,23 +10,21 @@ from .forms import KmpForm
 def kmp():
     form = KmpForm()
 
-    starttime = datetime(2015, 2, 26, 12, 00, 00)
-    starttime_muut = datetime(2016, 3, 2, 12, 00)
-    endtime = datetime(2016, 3, 10, 23, 59, 59)
-
-    OTIT = 25
-    SIK = 25
+    starttime = datetime(2016, 2, 28, 12, 00, 00)
+    othertime = datetime(2016, 3, 7, 12, 00)
+    endtime = datetime(2016, 3, 9, 23, 59, 59)
+    nowtime=datetime.now()
 
     otit = KmpEntry.query.filter_by(guild='otit').order_by('time').all()
     sik = KmpEntry.query.filter_by(guild='sik').order_by('time').all()
-    muu = KmpEntry.query.filter_by(guild='muu').all()
+    muu = KmpEntry.query.filter_by(guild='muu').order_by('time').all()
 
     guilds = [
         {'name': 'OTiT',
-        'quota': 25,
-        'submissions': otit},
+         'quota': 23,
+         'submissions': otit},
         {'name': 'SIK',
-         'quota': 25,
+         'quota': 23,
          'submissions': sik},
         {'name': 'Muut',
          'quota': 0,
@@ -37,12 +35,13 @@ def kmp():
     if form.validate_on_submit():
         flash('Kiitos ilmoittautumisesta, {}'.format(form.name.data))
         sub = KmpEntry(
-            form.name.data,
-            form.email.data,
-            form.phone.data,
-            form.guild.data,
-            form.sitsit.data,
-            form.station.data
+            name=form.name.data,
+            email=form.email.data,
+            phone=form.phone.data,
+            guild=form.guild.data,
+            station=form.station.data,
+            friends=form.friends.data,
+            nationality=form.nationality.data,
         )
         db.session.add(sub)
         db.session.commit()
@@ -54,8 +53,8 @@ def kmp():
                            title='KMP 2016',
                            starttime=starttime,
                            endtime=endtime,
-                           nowtime=datetime.now(),
-                           starttime_muut=starttime_muut,
+                           nowtime=nowtime,
+                           othertime=othertime,
                            form=form,
                            otit=otit,
                            sik = sik,

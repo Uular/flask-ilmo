@@ -23,6 +23,21 @@
     </div>
 {%- endmacro %}
 
+{% macro render_sub_field(field, label_visible=true) -%}
+
+    <div class="form-group {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }}">
+        {% if (field.type != 'HiddenField' and field.type !='CSRFTokenField') and label_visible %}
+            <label for="{{ field.id }}" class="col-sm-6 control-label">{{ field.label }}</label>
+        {% endif %}
+        <div class="col-sm-6">{{ field(class_='form-control', **kwargs) }}</div>
+        {% if field.errors %}
+            {% for e in field.errors %}
+                <p class="help-block">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+{%- endmacro %}
+
 {# Renders checkbox fields since they are represented differently in bootstrap
     Params:
         field - WTForm field (there are no check, but you should put here only BooleanField.

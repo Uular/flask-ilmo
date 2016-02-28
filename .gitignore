@@ -2,3 +2,5 @@
 .idea/
 env/
 *.log
+mysecret.py
+db_repo/
