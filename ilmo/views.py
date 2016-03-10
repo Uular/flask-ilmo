@@ -65,10 +65,10 @@ def kmp():
 
 @app.route('/sitsit', methods=['GET', 'POST'])
 def sitsit():
-    form = HumuForm()
+    main = HumuForm()
     avec = HumuForm(prefix='avec')
 
-    starttime = datetime(2016, 3, 14, 12, 00, 00)
+    starttime = datetime(2015, 3, 14, 12, 00, 00)
     othertime = datetime(2016, 3, 22, 23, 59, 59)
     endtime = datetime(2016, 3, 22, 23, 59, 59)
     nowtime=datetime.now()
@@ -94,19 +94,29 @@ def sitsit():
     ]
     count = HumuEntry.query.count()
 
-    if form.validate_on_submit() and (form.avec.data and avec.validate_on_submit):
-
-        flash('Kiitos ilmoittautumisesta, {}'.format(form.name.data))
-        sub = HumuEntry(
-            name=form.name.data,
-            email=form.email.data,
-            phone=form.phone.data,
-            guild=form.guild.data,
+    if main.validate_on_submit() and (main.avec.data == avec.validate_on_submit()):
+        mainsub = HumuEntry(
+            name=main.name.data,
+            email=main.email.data,
+            phone=main.phone.data,
+            guild=main.guild.data,
         )
-        db.session.add(sub)
+
+        if main.avec.data:
+            avecsub = HumuEntry(
+                name=avec.name.data,
+                email=avec.email.data,
+                phone=avec.phone.data,
+                guild=avec.guild.data
+            )
+            mainsub.avec = avecsub
+            db.session.add(avecsub)
+        db.session.add(mainsub)
         db.session.commit()
+        flash('Kiitos ilmoittautumisesta, {}'.format(main.name.data))
         return redirect(url_for('kmp'))
-    elif form.is_submitted():
+
+    elif main.is_submitted():
         flash("Ilmoittautuminen epäonnistui!")
 
     return render_template('humusitsit.html',
@@ -115,7 +125,7 @@ def sitsit():
                            endtime=endtime,
                            nowtime=nowtime,
                            othertime=othertime,
-                           form=form,
+                           form=main,
                            avec=avec,
                            count=count,
                            guilds=guilds)

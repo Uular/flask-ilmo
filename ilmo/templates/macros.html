@@ -10,32 +10,32 @@
 #}
 {% macro render_field(field, label_visible=true) -%}
 
-    <div class="form-group {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }}">
-        {% if (field.type != 'HiddenField' and field.type !='CSRFTokenField') and label_visible %}
-            <label for="{{ field.id }}" class="col-lg-2 control-label">{{ field.label }}</label>
-        {% endif %}
-        <div class="col-lg-10">{{ field(class_='form-control', **kwargs) }}</div>
-        {% if field.errors %}
-            {% for e in field.errors %}
-                <p class="help-block">{{ e }}</p>
-            {% endfor %}
-        {% endif %}
-    </div>
+  <div class="form-group {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }}">
+    {% if (field.type != 'HiddenField' and field.type !='CSRFTokenField') and label_visible %}
+      <label for="{{ field.id }}" class="col-lg-2 control-label">{{ field.label }}</label>
+    {% endif %}
+    <div class="col-lg-10">{{ field(class_='form-control', **kwargs) }}</div>
+    {% if field.errors %}
+      {% for e in field.errors %}
+        <p class="help-block">{{ e }}</p>
+      {% endfor %}
+    {% endif %}
+  </div>
 {%- endmacro %}
 
 {% macro render_sub_field(field, label_visible=true) -%}
 
-    <div class="form-group {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }}">
-        {% if (field.type != 'HiddenField' and field.type !='CSRFTokenField') and label_visible %}
-            <label for="{{ field.id }}" class="col-sm-6 control-label">{{ field.label }}</label>
-        {% endif %}
-        <div class="col-sm-6">{{ field(class_='form-control', **kwargs) }}</div>
-        {% if field.errors %}
-            {% for e in field.errors %}
-                <p class="help-block">{{ e }}</p>
-            {% endfor %}
-        {% endif %}
-    </div>
+  <div class="form-group {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }}">
+    {% if (field.type != 'HiddenField' and field.type !='CSRFTokenField') and label_visible %}
+      <label for="{{ field.id }}" class="col-sm-6 control-label">{{ field.label }}</label>
+    {% endif %}
+    <div class="col-sm-6">{{ field(class_='form-control', **kwargs) }}</div>
+    {% if field.errors %}
+      {% for e in field.errors %}
+        <p class="help-block">{{ e }}</p>
+      {% endfor %}
+    {% endif %}
+  </div>
 {%- endmacro %}
 
 {# Renders checkbox fields since they are represented differently in bootstrap
@@ -48,11 +48,11 @@
         {{ macros.render_checkbox_field(form.remember_me) }}
  #}
 {% macro render_checkbox_field(field) -%}
-    <div class="checkbox col-sm-offset-2 col-sm-10">
-        <label>
-            {{ field(type='checkbox', **kwargs) }} {{ field.label }}
-        </label>
-    </div>
+  <div class="checkbox col-sm-offset-2 col-sm-10">
+    <label>
+      {{ field(type='checkbox', **kwargs) }} {{ field.label }}
+    </label>
+  </div>
 {%- endmacro %}
 
 {# Renders radio field
@@ -65,13 +65,25 @@
         {{ macros.render_radio_field(form.answers) }}
  #}
 {% macro render_radio_field(field) -%}
-        <div class="radio col-lg-10">
+  <div class="radio col-lg-10">
     {% for value, label, selected in field.iter_choices() %}
-        <div>
-            <label>
-                <input type="radio" name="{{ field.id }}" id="{{ field.id }}" value="{{ value }}" {% if selected %}checked="checked"{% endif %}>{{ label }}
-            </label>
-        </div>
+      <div>
+        <label>
+          <input type="radio" name="{{ field.id }}" id="{{ field.id }}" value="{{ value }}" {% if selected %}checked="checked"{% endif %}>{{ label }}
+        </label>
+      </div>
+    {% endfor %}
+  </div>
+{%- endmacro %}
+
+{% macro render_radio_sub_field(field) -%}
+  <div class="radio col-sm-6 {% if field.errors %}has-error{% endif %}">
+    {% for value, label, selected in field.iter_choices() %}
+      <div>
+        <label>
+          <input type="radio" name="{{ field.id }}" id="{{ field.id }}" value="{{ value }}" {% if selected %}checked="checked"{% endif %}>{{ label }}
+        </label>
+      </div>
     {% endfor %}
   </div>
 {%- endmacro %}
@@ -94,21 +106,21 @@
     #}
 {% macro render_form(form, action_url='', action_text='Submit', class_='', btn_class='btn btn-default') -%}
 
-    <form method="POST" action="{{ action_url }}" role="form" class="{{ class_ }}">
-        {{ form.hidden_tag() if form.hidden_tag }}
-        {% if caller %}
-            {{ caller() }}
+  <form method="POST" action="{{ action_url }}" role="form" class="{{ class_ }}">
+    {{ form.hidden_tag() if form.hidden_tag }}
+    {% if caller %}
+      {{ caller() }}
+    {% else %}
+      {% for f in form %}
+        {% if f.type == 'BooleanField' %}
+          {{ render_checkbox_field(f) }}
+        {% elif f.type == 'RadioField' %}
+          {{ render_radio_field(f) }}
         {% else %}
-            {% for f in form %}
-                {% if f.type == 'BooleanField' %}
-                    {{ render_checkbox_field(f) }}
-                {% elif f.type == 'RadioField' %}
-                    {{ render_radio_field(f) }}
-                {% else %}
-                    {{ render_field(f) }}
-                {% endif %}
-            {% endfor %}
+          {{ render_field(f) }}
         {% endif %}
-        <button type="submit" class="{{ btn_class }}">{{ action_text }} </button>
-    </form>
+      {% endfor %}
+    {% endif %}
+    <button type="submit" class="{{ btn_class }}">{{ action_text }} </button>
+  </form>
 {%- endmacro %}

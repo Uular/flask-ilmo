@@ -31,7 +31,7 @@
 
     <hr/>
 
-    {% if otit or sik or muu %}
+    {% if nowtime > starttime and count > 0 %}
       <h2>Ilmoittautuneet: </h2>
       <div class="guildlist row center">
         {% for guild in guilds %}

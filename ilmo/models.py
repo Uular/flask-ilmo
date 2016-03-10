@@ -37,6 +37,8 @@ class HumuEntry(db.Model):
     guild = db.Column(db.String(10), index=True, unique=False)
     alcohol = db.Column(db.Boolean())
     time = db.Column(db.DateTime)
+    avec_id = db.Column(db.Integer, db.ForeignKey('humu_entry.id'))
+    avec = db.relationship('HumuEntry', uselist=False)
 
 
     def __init__(self, name="", email="", phone="", guild=""):

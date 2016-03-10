@@ -1,11 +1,13 @@
-.reveal-if-active {
+.reveal-if-active,
+input[type="checkbox"]:checked ~ .reveal-if-inactive {
     opacity: 0;
     max-height:0;
     overflow: hidden;
 }
 
 input[type="radio"]:checked ~ .reveal-if-active,
-input[type="checkbox"]:checked ~ .reveal-if-active {
+input[type="checkbox"]:checked ~ .reveal-if-active,
+.reveal-if-inactive {
   opacity: 1;
   max-height: 100px; /* little bit of a magic number :( */
   overflow: visible;

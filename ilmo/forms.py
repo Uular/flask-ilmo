@@ -41,14 +41,22 @@ class HumuForm(Form):
                                 ('communica', 'Communica'),
                                 ('muu', 'Muu')],
                        default='otit', validators=[InputRequired()])
-    avec = BooleanField('Avec', id='avec')
+    alcohol_free = BooleanField('Alkoholiton', default=False)
+    wine = RadioField('wine',
+                         choices=[('puna', 'Punaviini'),
+                                  ('valko', 'Valkoviini')])
+    mild = RadioField('mild',
+                      choices=[('olut', 'Olut'),
+                               ('siideri', 'Siideri'),
+                               ('lonkero', 'Lonkero')])
+    avec = BooleanField('Avec', id='avec', default=False)
 
     @staticmethod
-    def validate_sitsit(form, field):
-        if field.data == True and form.guild.data != 'otit':
-            raise ValidationError('Vain tietoteekkarit pääsevät Titeeneille!')
+    def validate_wine(form, field):
+        if not form.alcohol_free.data and not field.data:
+            raise ValidationError('Ole hyvä ja valitse viini!')
 
     @staticmethod
-    def validate_nationality(form, field):
-        if form.guild.data == 'sik' and not field.data:
-            raise ValidationError('Ole hyvä ja ilmoita kansallisuus risteilyä varten!')
+    def validate_mild(form, field):
+        if not form.alcohol_free.data and not field.data:
+            raise ValidationError('Ole hyvä ja valitse mieto!')
