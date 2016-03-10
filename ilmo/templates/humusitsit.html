@@ -10,13 +10,13 @@
       <form class="form-horizontal" action="" method="post" name="kmp">
         {{ form.hidden_tag() }}
         {{ sitsit.render_form(form) }}
-        <div>
+        <div class="row">
           <input type="checkbox" name="{{ form.avec.id }}" id="{{ form.avec.id }}" />
-        </div>
-        <div class="form-group">
-          <div class="reveal-if-active">
+          <div class="col-lg-12 reveal-if-active">
             {{ sitsit.render_form(avec) }}
           </div>
+        </div>
+        <div class="row form-group">
           <div class="col-sm-offset-2 col-sm-10">
             <input type="submit" value="Lähetä" class="btn btn-default">
           </div>

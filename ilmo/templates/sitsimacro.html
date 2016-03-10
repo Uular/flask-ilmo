@@ -7,14 +7,12 @@
     <label class="control-label col-lg-2">Kilta:</label>
     <div class="radio col-lg-10">
       {% for value, label, selected in form.guild.iter_choices() %}
-        {% if value!='muu' or nowtime > othertime %}
           <div>
             <label>
               <input type="radio" name="{{ form.guild.id }}" id="{{ form.guild.id }}" value="{{ value }}"
                      {% if selected %}checked="checked"{% endif %}>{{ label }}
             </label>
           </div>
-        {% endif %}
       {% endfor %}
     </div>
     {% for e in form.guild.errors %}

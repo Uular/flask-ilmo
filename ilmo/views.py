@@ -68,9 +68,9 @@ def sitsit():
     form = HumuForm()
     avec = HumuForm(prefix='avec')
 
-    starttime = datetime(2016, 2, 28, 12, 00, 00)
-    othertime = datetime(2016, 3, 7, 12, 00)
-    endtime = datetime(2016, 3, 9, 23, 59, 59)
+    starttime = datetime(2016, 3, 14, 12, 00, 00)
+    othertime = datetime(2016, 3, 22, 23, 59, 59)
+    endtime = datetime(2016, 3, 22, 23, 59, 59)
     nowtime=datetime.now()
 
     otit = HumuEntry.query.filter_by(guild='otit').order_by('time').all()
