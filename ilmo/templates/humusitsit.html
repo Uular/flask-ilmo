@@ -2,6 +2,8 @@
 {% import 'macros.html' as macros %}
 {% import 'sitsimacro.html' as sitsit %}
 {% block content %}
+  <script src="static/showme.js">
+  </script>
   <div class="main">
     <h1>Humanöörisitsit tulevat 30.3.2016</h1>
     <p>Insert text here</p>
@@ -9,13 +11,9 @@
     {% if starttime < nowtime < endtime %}
       <form class="form-horizontal" action="" method="post" name="kmp">
         {{ form.hidden_tag() }}
-        {{ sitsit.render_form(form) }}
-        <div class="row">
-          <input type="checkbox" name="{{ form.avec.id }}" id="{{ form.avec.id }}" />
-          <div class="col-lg-12 reveal-if-active">
-            {{ sitsit.render_form(avec) }}
-          </div>
-        </div>
+      <div>
+        {{ sitsit.render_form(form, avec) }}
+      </div>
         <div class="row form-group">
           <div class="col-sm-offset-2 col-sm-10">
             <input type="submit" value="Lähetä" class="btn btn-default">
@@ -59,6 +57,7 @@
       <h2>Ei ilmoittautuneita!</h2>
     {% endif %}
   </div>
+
 {% endblock %}
 
 

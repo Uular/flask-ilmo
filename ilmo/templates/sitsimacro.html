@@ -1,33 +1,24 @@
 {% import 'macros.html' as macros %}
-{% macro render_form(form, avec) %}
+{% macro render_form(form, avec=None) %}
   {{ macros.render_field(form.name) }}
   {{ macros.render_field(form.email) }}
   {{ macros.render_field(form.phone) }}
-  <div class="form-group {% if form.guild.errors %}has-error{% endif %} row">
-    <label class="control-label col-lg-2">Kilta:</label>
-    <div class="radio col-lg-10">
-      {% for value, label, selected in form.guild.iter_choices() %}
-        <div>
-          <label>
-            <input type="radio" name="{{ form.guild.id }}" id="{{ form.guild.id }}" value="{{ value }}"
-                   {% if selected %}checked="checked"{% endif %}>{{ label }}
-          </label>
-        </div>
-      {% endfor %}
-    </div>
-    {% for e in form.guild.errors %}
-      <p class="help-block">{{ e }}</p>
-    {% endfor %}
+  {{ macros.render_radio_field(form.guild) }}
+  {{ macros.render_checkbox_field(form.alcohol_free, onclick="showMe('alcohol_options', this, true)") }}
+  <div id="{{ form.prefix }}alcohol_options">
+    {{ macros.render_radio_field(form.wine) }}
+    {{ macros.render_radio_field(form.mild) }}
   </div>
-  <label>
-    {{ form.alcohol_free(type='checkbox', **kwargs) }} {{ form.alcohol_free.label }}
-    <div class="reveal-if-inactive">
-      {{ macros.render_radio_sub_field(form.wine) }}
-      {{ macros.render_radio_sub_field(form.mild) }}
-    </div>
-  </label>
+  {{ macros.render_field(form.allergies) }}
   {% if avec %}
-    {{  }}
+    {{ macros.render_checkbox_field(form.avec, onclick="showMe('avec_form', this)") }}
+
+    <div id="avec_form">
+      {{ render_form(avec) }}
+    </div>
   {% endif %}
 
+
+  <script>showMe('avec_form', document.getElementById("{{ form.avec.id }}"));</script>
+  <script>showMe('{{ form.prefix }}alcohol_options', document.getElementById("{{ form.alcohol_free.id }}"), true);</script>
 {% endmacro %}

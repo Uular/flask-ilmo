@@ -35,15 +35,18 @@ class HumuEntry(db.Model):
     email = db.Column(db.String(80), unique=False)
     phone = db.Column(db.String(20), unique=False)
     guild = db.Column(db.String(10), index=True, unique=False)
+    allergies = db.Column(db.String(200))
     alcohol = db.Column(db.Boolean())
     time = db.Column(db.DateTime)
     avec_id = db.Column(db.Integer, db.ForeignKey('humu_entry.id'))
     avec = db.relationship('HumuEntry', uselist=False)
 
 
-    def __init__(self, name="", email="", phone="", guild=""):
+    def __init__(self, name="", email="", phone="", guild="", allergies="", alcohol=True):
         self.name = name
         self.email = email
         self.phone = phone
         self.guild = guild
         self.time = datetime.now()
+        self.allergies = allergies
+        self.alcohol = alcohol

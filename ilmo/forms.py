@@ -35,17 +35,18 @@ class HumuForm(Form):
     name = StringField('Nimi', id='name', validators=[DataRequired(), Length(max=50)])
     email = StringField('Sähköposti', id='email', validators=[DataRequired(), Email(), Length(max=50)])
     phone = StringField('Puhelinnumero', id='phone', validators=[DataRequired(), Length(max=15)])
-    guild = RadioField('guild',
+    guild = RadioField('Kilta',
                        choices=[('otit', 'OTiT'),
                                 ('olo', 'OLO'),
                                 ('communica', 'Communica'),
                                 ('muu', 'Muu')],
                        default='otit', validators=[InputRequired()])
+    allergies = StringField('Allergiat', id='allergy')
     alcohol_free = BooleanField('Alkoholiton', default=False)
-    wine = RadioField('wine',
+    wine = RadioField('Viini',
                          choices=[('puna', 'Punaviini'),
                                   ('valko', 'Valkoviini')])
-    mild = RadioField('mild',
+    mild = RadioField('Mieto',
                       choices=[('olut', 'Olut'),
                                ('siideri', 'Siideri'),
                                ('lonkero', 'Lonkero')])

@@ -48,10 +48,16 @@
         {{ macros.render_checkbox_field(form.remember_me) }}
  #}
 {% macro render_checkbox_field(field) -%}
-  <div class="checkbox col-sm-offset-2 col-sm-10">
-    <label>
-      {{ field(type='checkbox', **kwargs) }} {{ field.label }}
-    </label>
+
+  <div class="form-group row">
+    {{ field.label(class="control-label col-sm-2") }}
+    <div class="col-sm-10">
+      <div class="checkbox">
+        <label>
+          {{ field(type='checkbox', **kwargs) }}
+        </label>
+      </div>
+    </div>
   </div>
 {%- endmacro %}
 
@@ -65,13 +71,19 @@
         {{ macros.render_radio_field(form.answers) }}
  #}
 {% macro render_radio_field(field) -%}
-  <div class="radio col-lg-10">
-    {% for value, label, selected in field.iter_choices() %}
-      <div>
-        <label>
-          <input type="radio" name="{{ field.id }}" id="{{ field.id }}" value="{{ value }}" {% if selected %}checked="checked"{% endif %}>{{ label }}
-        </label>
-      </div>
+  <div {% if id %}id="{{ id }}"{% endif %} class="form-group {% if field.errors %}has-error{% endif %} row">
+    <label class="control-label col-sm-2">{{ field.label }}</label>
+    <div class="radio col-sm-10">
+      {% for value, label, selected in field.iter_choices() %}
+        <div>
+          <label>
+            <input type="radio" name="{{ field.id }}" id="{{ field.id }}" value="{{ value }}" {% if selected %}checked="checked"{% endif %}>{{ label }}
+          </label>
+        </div>
+      {% endfor %}
+    </div>
+    {% for e in field.errors %}
+      <p class="help-block">{{ e }}</p>
     {% endfor %}
   </div>
 {%- endmacro %}

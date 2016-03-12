@@ -5,7 +5,6 @@ from .models import KmpEntry, HumuEntry
 from .forms import KmpForm, HumuForm
 
 
-@app.route('/', methods=['GET', 'POST'])
 @app.route('/kmp', methods=['GET', 'POST'])
 def kmp():
     form = KmpForm()
@@ -63,12 +62,15 @@ def kmp():
                            guilds=guilds)
 
 
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/sitsit', methods=['GET', 'POST'])
 def sitsit():
     main = HumuForm()
     avec = HumuForm(prefix='avec')
 
-    starttime = datetime(2015, 3, 14, 12, 00, 00)
+    starttime = datetime(2016, 3, 14, 12, 00, 00)
+    if app.debug:
+        starttime = datetime(2015, 3, 14, 12, 00, 00)
     othertime = datetime(2016, 3, 22, 23, 59, 59)
     endtime = datetime(2016, 3, 22, 23, 59, 59)
     nowtime=datetime.now()
@@ -100,6 +102,8 @@ def sitsit():
             email=main.email.data,
             phone=main.phone.data,
             guild=main.guild.data,
+            alcohol=not main.alcohol_free.data,
+            allergies=main.allergies.data
         )
 
         if main.avec.data:
@@ -107,20 +111,22 @@ def sitsit():
                 name=avec.name.data,
                 email=avec.email.data,
                 phone=avec.phone.data,
-                guild=avec.guild.data
+                guild=avec.guild.data,
+                alcohol=not avec.alcohol_free.data,
+                allergies=avec.allergies.data
             )
             mainsub.avec = avecsub
             db.session.add(avecsub)
         db.session.add(mainsub)
         db.session.commit()
         flash('Kiitos ilmoittautumisesta, {}'.format(main.name.data))
-        return redirect(url_for('kmp'))
+        return redirect(url_for('sitsit'))
 
     elif main.is_submitted():
         flash("Ilmoittautuminen epäonnistui!")
 
     return render_template('humusitsit.html',
-                           title='KMP 2016',
+                           title='Humanöörisitsit',
                            starttime=starttime,
                            endtime=endtime,
                            nowtime=nowtime,
