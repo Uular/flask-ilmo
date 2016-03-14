@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
+
 from flask.ext.wtf import Form
 from wtforms import StringField, BooleanField, RadioField, ValidationError
-from wtforms.validators import DataRequired, Email, InputRequired, Length
+from wtforms.validators import DataRequired, Email, InputRequired, Length, Optional, StopValidation
 
 
 class KmpForm(Form):
@@ -39,8 +41,7 @@ class HumuForm(Form):
                        choices=[('otit', 'OTiT'),
                                 ('olo', 'OLO'),
                                 ('communica', 'Communica'),
-                                ('muu', 'Muu')],
-                       default='otit', validators=[InputRequired()])
+                                ('muu', 'Muu')])
     allergies = StringField('Allergiat', id='allergy')
     alcohol_free = BooleanField('Alkoholiton', default=False)
     wine = RadioField('Viini',
@@ -54,10 +55,12 @@ class HumuForm(Form):
 
     @staticmethod
     def validate_wine(form, field):
-        if not form.alcohol_free.data and not field.data:
-            raise ValidationError('Ole hyvä ja valitse viini!')
+        if form.alcohol_free.raw_data:
+            field.errors[:] = []
+            raise StopValidation()
 
     @staticmethod
     def validate_mild(form, field):
-        if not form.alcohol_free.data and not field.data:
-            raise ValidationError('Ole hyvä ja valitse mieto!')
+        if form.alcohol_free.raw_data:
+            field.errors[:] = []
+            raise StopValidation()

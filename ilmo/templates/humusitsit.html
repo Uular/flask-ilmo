@@ -6,14 +6,30 @@
   </script>
   <div class="main">
     <h1>Humanöörisitsit tulevat 30.3.2016</h1>
-    <p>Insert text here</p>
+    <h3>OTiT, OLO ry ja Communica ry presents:</h3>
+
+    <p>Kevät tulee ja niin myös jälleen jokakeväiset Humanöörisitsit! Nämä perinteiset sitsit täyttävät tänä vuonna 10 vuotta ja juhlistamme näitä pyöreitä vuosia 30.3. upeassa kevätjuhla-miljöössä silkkiruusujen keskellä Walhallassa.</p>
+
+    <p>Laita siis kukkaisin ja keväisin mekkosi päälle ja pyyhi pölyt tumman pukusi harteilta! Ota myös halutessasi uima-asusi mukaan, sillä:<br/>
+      Illan pimetessä PALJU ja sauna lämpenevät ja sitsihumun jälkeen voimme jatkaa juhlimista aamuyöhön saakka.</p>
+
+    <p><strong>MITÄ? Humanöörisitsit</strong></br>
+      <strong>MISSÄ?</strong> Walhallassa, Jaalakuja 1</br>
+      <strong>MILLOIN?</strong> 30.3. klo 19</br>
+      <strong>PUKUKOODI?</strong> Keväinen mekko tai puku</p>
+
+    <p><strong>Maksuohjeet:</strong> <br/>
+      <strong>Määrä:</strong> 14€ / 17€ (alkoholiton/-holillinen) <br/>
+      <strong>Saaja:</strong> Oulun Tietoteekkarit ry <br/>
+      <strong>Tili:</strong> FI03 4744 3020 0116 87 <br/>
+      <strong>Viesti:</strong> Humanöörisitsit <em>omanimi</em> <br/>
+      <strong>Eräpäivä:</strong> 30.3.2016</p>
     <hr/>
     {% if starttime < nowtime < endtime %}
       <form class="form-horizontal" action="" method="post" name="kmp">
-        {{ form.hidden_tag() }}
-      <div>
-        {{ sitsit.render_form(form, avec) }}
-      </div>
+        <div>
+          {{ sitsit.render_form(form, avec) }}
+        </div>
         <div class="row form-group">
           <div class="col-sm-offset-2 col-sm-10">
             <input type="submit" value="Lähetä" class="btn btn-default">
@@ -22,35 +38,43 @@
       </form>
       <p>Ilmoittautuminen päättyy {{ endtime }}</p>
     {% elif nowtime < starttime %}
-      <p>Kello on {{ nowtime }} virallista otitsun-aikaa. Ilmoittautuminen aukeaa {{ starttime }}.</p>
+      <p>Kello on {{ nowtime }} virallista otitsun-aikaa. <br/>
+        Ilmoittautuminen aukeaa {{ starttime }} ja päättyy {{ endtime }}.</p>
     {% else %}
       <p>Ilmoittautuminen on päättynyt.</p>
     {% endif %}
 
     <hr/>
 
-    {% if nowtime > starttime and count > 0 %}
+    {% if count > 0 %}
       <h2>Ilmoittautuneet: </h2>
-      <div class="guildlist row center">
+      <div class="guildlist row center" {% if nowtime < starttime %}style="display: none;"{% endif %}>
         {% for guild in guilds %}
+          {% if (guild.name != 'Muut') or (nowtime > othertime) %}
           <div class="guild col-md-4">
             <h2>{{ guild.name }}</h2>
             <p>{{ guild.submissions|length }}/{{ guild.quota }}</p>
             {% if guild.submissions %}
               <ol>
                 {% for sub in guild.submissions %}
-                  <li>
-                    {{ sub.name[:30] }}
-                    {% if loop.index > guild.quota %}
-                      (varalla)
-                    {% endif %}
-                  </li>
+                  {% if not sub.is_avec -%}
+                    <li>
+                      {{ sub.name[:30] }}
+                      {% if sub.avec %}
+                        <em>avec</em> {{ sub.avec.name }}
+                      {% endif %}
+                      {% if loop.index > guild.quota %}
+                        (varalla)
+                      {% endif %}
+                    </li>
+                  {%- endif %}
                 {% endfor %}
               </ol>
             {% else %}
               <em>Ei ketään {%  if guild.name=='muu' %}:){% else %}:({% endif %}</em>
             {% endif %}
           </div>
+          {% endif %}
         {% endfor %}
       </div>
     {% else %}
@@ -59,8 +83,4 @@
   </div>
 
 {% endblock %}
-
-
-
-
 

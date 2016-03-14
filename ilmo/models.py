@@ -37,16 +37,22 @@ class HumuEntry(db.Model):
     guild = db.Column(db.String(10), index=True, unique=False)
     allergies = db.Column(db.String(200))
     alcohol = db.Column(db.Boolean())
+    mild = db.Column(db.String(15))
+    wine = db.Column(db.String(15))
     time = db.Column(db.DateTime)
     avec_id = db.Column(db.Integer, db.ForeignKey('humu_entry.id'))
     avec = db.relationship('HumuEntry', uselist=False)
+    is_avec = db.Column(db.Boolean)
 
 
-    def __init__(self, name="", email="", phone="", guild="", allergies="", alcohol=True):
+    def __init__(self, name="", email="", phone="", guild="", allergies="", alcohol_free=False, wine=None, mild=None, is_avec=False):
         self.name = name
         self.email = email
         self.phone = phone
         self.guild = guild
+        self.wine = wine
+        self.mild = mild
         self.time = datetime.now()
         self.allergies = allergies
-        self.alcohol = alcohol
+        self.alcohol = alcohol_free
+        self.is_avec = is_avec

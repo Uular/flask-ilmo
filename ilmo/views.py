@@ -1,4 +1,5 @@
 from flask import render_template, flash, redirect, url_for
+import wtforms
 from datetime import datetime
 from ilmo import app, db
 from .models import KmpEntry, HumuEntry
@@ -65,15 +66,27 @@ def kmp():
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/sitsit', methods=['GET', 'POST'])
 def sitsit():
-    main = HumuForm()
-    avec = HumuForm(prefix='avec')
+
+
+
 
     starttime = datetime(2016, 3, 14, 12, 00, 00)
     if app.debug:
-        starttime = datetime(2015, 3, 14, 12, 00, 00)
+        starttime = datetime(2016, 2, 14, 12, 00, 00)
     othertime = datetime(2016, 3, 22, 23, 59, 59)
     endtime = datetime(2016, 3, 22, 23, 59, 59)
     nowtime=datetime.now()
+
+    main_choices = [('otit', 'OTiT'), ('olo', 'OLO'), ('communica', 'Communica')]
+    if nowtime > othertime:
+        main_choices.append(('muu', 'Muu'))
+
+    class MainForm(HumuForm):
+        guild = wtforms.RadioField('Kilta',
+                       choices=main_choices)
+
+    main = MainForm()
+    avec = HumuForm(prefix='avec')
 
     otit = HumuEntry.query.filter_by(guild='otit').order_by('time').all()
     olo = HumuEntry.query.filter_by(guild='olo').order_by('time').all()
@@ -96,29 +109,42 @@ def sitsit():
     ]
     count = HumuEntry.query.count()
 
-    if main.validate_on_submit() and (main.avec.data == avec.validate_on_submit()):
+    success = main.validate_on_submit()
+    avec_success = bool(main.avec.raw_data) == bool(avec.validate_on_submit())
+    print("b", bool(main.avec.raw_data), avec.validate_on_submit())
+    print("a", success, avec_success)
+
+    if success and avec_success:
         mainsub = HumuEntry(
             name=main.name.data,
             email=main.email.data,
             phone=main.phone.data,
             guild=main.guild.data,
-            alcohol=not main.alcohol_free.data,
-            allergies=main.allergies.data
+            alcohol_free=main.alcohol_free.data,
+            allergies=main.allergies.data,
+            wine=main.wine.data,
+            mild=main.mild.data
         )
 
         if main.avec.data:
+            if avec.guild.data == "muu":
+                avec.guild.data = main.guild.data
             avecsub = HumuEntry(
                 name=avec.name.data,
                 email=avec.email.data,
                 phone=avec.phone.data,
                 guild=avec.guild.data,
-                alcohol=not avec.alcohol_free.data,
-                allergies=avec.allergies.data
+                alcohol_free=avec.alcohol_free.data,
+                allergies=avec.allergies.data,
+                wine=avec.wine.data,
+                mild=avec.wine.data,
+                is_avec=True
             )
             mainsub.avec = avecsub
             db.session.add(avecsub)
         db.session.add(mainsub)
         db.session.commit()
+
         flash('Kiitos ilmoittautumisesta, {}'.format(main.name.data))
         return redirect(url_for('sitsit'))
 

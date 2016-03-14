@@ -1,24 +1,26 @@
 {% import 'macros.html' as macros %}
 {% macro render_form(form, avec=None) %}
+{% set alcohol_options = form._prefix + "alcohol_options" %}
+  {{ form.hidden_tag() }}
   {{ macros.render_field(form.name) }}
   {{ macros.render_field(form.email) }}
   {{ macros.render_field(form.phone) }}
   {{ macros.render_radio_field(form.guild) }}
-  {{ macros.render_checkbox_field(form.alcohol_free, onclick="showMe('alcohol_options', this, true)") }}
-  <div id="{{ form.prefix }}alcohol_options">
+  {{ macros.render_checkbox_field(form.alcohol_free, onclick="showMe('" + alcohol_options + "', this, true)") }}
+  <div id="{{ alcohol_options}}">
     {{ macros.render_radio_field(form.wine) }}
     {{ macros.render_radio_field(form.mild) }}
   </div>
   {{ macros.render_field(form.allergies) }}
   {% if avec %}
-    {{ macros.render_checkbox_field(form.avec, onclick="showMe('avec_form', this)") }}
+    {{ macros.render_checkbox_field(form.avec, onclick='showMe("avec_form", this)') }}
 
     <div id="avec_form">
       {{ render_form(avec) }}
     </div>
+
+
+    <script>showMe("avec_form", document.getElementById("{{ form.avec.id }}"));</script>
   {% endif %}
-
-
-  <script>showMe('avec_form', document.getElementById("{{ form.avec.id }}"));</script>
-  <script>showMe('{{ form.prefix }}alcohol_options', document.getElementById("{{ form.alcohol_free.id }}"), true);</script>
+  <script>showMe("{{ alcohol_options}}", document.getElementById("{{ form.alcohol_free.id }}"), true);</script>
 {% endmacro %}
