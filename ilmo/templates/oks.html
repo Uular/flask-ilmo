@@ -1,0 +1,106 @@
+{% extends 'pollbase.html' %}
+{% import 'macros.html' as macros %}
+{% import 'sitsimacro.html' as sitsit %}
+{% block content %}
+  <script src="static/showme.js">
+  </script>
+  <div class="main">
+  <h1>Opetuksenkehittämisseminaari 2016</h1>
+    <p>Tervetuloa tiistaina 5.4.2016 Teekkaritalolla järjestettävään Tieto- ja sähkötekniikan tiedekunnan opetuksenkehittämisseminaariin ja sitsityyliseen illanviettoon.</p>
+
+    <p>Seminaarin tarkoituksena on pohtia ajankohtaisia Tieto- ja sähkötekniikan tiedekunnan opetukseen liittyviä aiheita ja antaa mahdollisuus vaikeuttaa tiedekunnassa annettavaan opetukseen. Seminaarin onnistumisen vuoksi olisi tärkeää, että tiedekuntien tutkimusryhmät olisivat edustettuina. Seminaarin jälkeen pidettävät sitsit ovat seminaariin osallistuville ilmaiset.</p>
+
+    <h2>Seminaarin alustava ohjelma:</h2>
+    <ul>
+      <li>16:30 Aloituspuheenvuorot kiltojen puheenjohtajilta</li>
+      <li>16:40 Tiedekunnan edustajien puheenvuorot</li>
+      <li>17:00 Nuori Opettaja -palkinto</li>
+      <li>17:10 Kahvia ja pullaa</li>
+      <li>17:15 Paneelikeskustelu alkaa
+        <ul>
+          <li>Tutkinto-ohjelmien muutokset</li>
+          <li>Tiedekunnan hallinnon uudelleenjärjestely</li>
+          <li>Kurssisuoritukset</li>
+        </ul>
+      </li>
+      <li>19:45 Palautteen kerääminen opiskelijoilta ja henkilökunnalta</li>
+      <li>20:00 Seminaari päättyy, sitsit alkavat</li>
+      <li>Myöhemmin vapaata illanviettoa ja saunomismahdollisuus</li>
+    </ul>
+
+    <p>Pukukoodina on miehillä tumma puku ja naisilla vastaava.
+      Vastaamme mielellämme tilaisuutta koskeviin kysymyksiin.
+    </p>
+
+    <p>Samuli Körkkö
+      opetusministeri(ät)otit.fi
+    </p>
+
+    <p>Tapio Immonen
+      opintovastaava(ät)sik.fi
+    </p>
+
+    <p>Samuli Heimonen
+      kopo-vastaava(ät)blanko.fi
+    </p>
+
+    <hr/>
+    {% if starttime < nowtime < endtime %}
+      <form class="form-horizontal" action="" method="post" name="kmp">
+        <div>
+          {{ sitsit.render_form(form, avec) }}
+        </div>
+        <div class="row form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <input type="submit" value="Lähetä" class="btn btn-default">
+          </div>
+        </div>
+      </form>
+      <p>Ilmoittautuminen päättyy {{ endtime }}</p>
+    {% elif nowtime < starttime %}
+      <p>Kello on {{ nowtime }} virallista otitsun-aikaa. <br/>
+        Ilmoittautuminen aukeaa {{ starttime }} ja päättyy {{ endtime }}.</p>
+    {% else %}
+      <p>Ilmoittautuminen on päättynyt.</p>
+    {% endif %}
+
+    <hr/>
+
+    {% if count > 0 %}
+      <h2>Ilmoittautuneet: </h2>
+      <div class="guildlist row center" {% if nowtime < starttime %}style="display: none;"{% endif %}>
+        {% for guild in guilds %}
+          {% if (guild.name != 'Muut') or (nowtime > othertime) %}
+            <div class="guild col-md-4">
+              <h2>{{ guild.name }}</h2>
+              <p>{{ guild.submissions|length }}/{{ guild.quota }}</p>
+              {% if guild.submissions %}
+                <ol>
+                  {% for sub in guild.submissions %}
+                    {% if not sub.is_avec -%}
+                      <li>
+                        {{ sub.name[:30] }}
+                        {% if sub.avec %}
+                          <em>avec</em> {{ sub.avec.name }}
+                        {% endif %}
+                        {% if loop.index > guild.quota %}
+                          (varalla)
+                        {% endif %}
+                      </li>
+                    {%- endif %}
+                  {% endfor %}
+                </ol>
+              {% else %}
+                <em>Ei ketään {%  if guild.name=='muu' %}:){% else %}:({% endif %}</em>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <h2>Ei ilmoittautuneita!</h2>
+    {% endif %}
+  </div>
+
+{% endblock %}
+

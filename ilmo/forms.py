@@ -64,3 +64,35 @@ class HumuForm(Form):
         if form.alcohol_free.raw_data:
             field.errors[:] = []
             raise StopValidation()
+
+
+class OksForm(Form):
+    name = StringField('Nimi', id='name', validators=[DataRequired(), Length(max=50)])
+    email = StringField('Sähköposti', id='email', validators=[DataRequired(), Email(), Length(max=50)])
+    phone = StringField('Puhelinnumero', id='phone', validators=[DataRequired(), Length(max=15)])
+    guild = RadioField('Kilta',
+                       choices=[('otit', 'OTiT'),
+                                ('olo', 'OLO'),
+                                ('communica', 'Communica'),
+                                ('muu', 'Muu')])
+    allergies = StringField('Allergiat', id='allergy')
+    alcohol_free = BooleanField('Alkoholiton', default=False)
+    wine = RadioField('Viini',
+                         choices=[('puna', 'Punaviini'),
+                                  ('valko', 'Valkoviini')])
+    mild = RadioField('Mieto',
+                      choices=[('olut', 'Olut'),
+                               ('siideri', 'Siideri'),
+                               ('lonkero', 'Lonkero')])
+
+    @staticmethod
+    def validate_wine(form, field):
+        if form.alcohol_free.raw_data:
+            field.errors[:] = []
+            raise StopValidation()
+
+    @staticmethod
+    def validate_mild(form, field):
+        if form.alcohol_free.raw_data:
+            field.errors[:] = []
+            raise StopValidation()

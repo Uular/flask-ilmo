@@ -2,8 +2,8 @@ from flask import render_template, flash, redirect, url_for
 import wtforms
 from datetime import datetime
 from ilmo import app, db
-from .models import KmpEntry, HumuEntry
-from .forms import KmpForm, HumuForm
+from .models import KmpEntry, HumuEntry, OksEntry
+from .forms import KmpForm, HumuForm, OksForm
 
 
 @app.route('/kmp', methods=['GET', 'POST'])
@@ -63,7 +63,6 @@ def kmp():
                            guilds=guilds)
 
 
-@app.route('/', methods=['GET', 'POST'])
 @app.route('/sitsit', methods=['GET', 'POST'])
 def sitsit():
 
@@ -159,5 +158,76 @@ def sitsit():
                            othertime=othertime,
                            form=main,
                            avec=avec,
+                           count=count,
+                           guilds=guilds)
+
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/oks', methods=['GET', 'POST'])
+def oks():
+
+    starttime = datetime(2016, 3, 22, 12, 00, 00)
+    if app.debug:
+        starttime = datetime(2015, 2, 14, 12, 00, 00)
+    othertime = datetime(2016, 3, 31, 23, 59, 59)
+    endtime = datetime(2016, 3, 29, 23, 59, 59)
+    nowtime=datetime.now()
+
+    main_choices = [('otit', 'OTiT'), ('sik', 'SIK'), ('blanko', 'Blanko'), ('tietotekniikka', 'Henkilökunta - Tietotekniikka'), ('tlt', 'Henkilökunta - Tietoliikennetekniikka'), ('sähkö', 'Henkilökunta - Sähkötekniikka'), ('tol', 'Henkilökunta - Tietojenkäsittely')]
+    if nowtime > othertime:
+        main_choices.append(('muu', 'Muu'))
+
+    class MainForm(OksForm):
+        guild = wtforms.RadioField('Kilta',
+                       choices=main_choices)
+
+    main = MainForm()
+
+    guilds = []
+    for choice in main_choices:
+        subs = OksEntry.query.filter_by(guild=choice[0]).order_by('time').all()
+        guild = {
+            'name': choice[1],
+            'submissions': subs,
+            'quota': 0
+        }
+        if choice[0] in ('sik', 'otit', 'blanko'):
+            guild['quota'] = 20
+        guilds.append(guild)
+
+    print(guilds)
+
+    count = OksEntry.query.count()
+
+    success = main.validate_on_submit()
+
+    if success:
+        mainsub = OksEntry(
+            name=main.name.data,
+            email=main.email.data,
+            phone=main.phone.data,
+            guild=main.guild.data,
+            alcohol_free=main.alcohol_free.data,
+            allergies=main.allergies.data,
+            wine=main.wine.data,
+            mild=main.mild.data
+        )
+
+        db.session.add(mainsub)
+        db.session.commit()
+
+        flash('Kiitos ilmoittautumisesta, {}'.format(main.name.data))
+        return redirect(url_for('sitsit'))
+
+    elif main.is_submitted():
+        flash("Ilmoittautuminen epäonnistui!")
+
+    return render_template('oks.html',
+                           title='Opetuksenkehittämisseminaari',
+                           starttime=starttime,
+                           endtime=endtime,
+                           nowtime=nowtime,
+                           othertime=othertime,
+                           form=main,
                            count=count,
                            guilds=guilds)
